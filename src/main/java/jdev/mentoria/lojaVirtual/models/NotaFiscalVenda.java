@@ -27,6 +27,11 @@ public class NotaFiscalVenda implements Serializable {
     @Column(columnDefinition = "text")
     private String pdf;
 
+    @OneToOne
+    @JoinColumn(name = "venda_compra_loja_virt_id", nullable = false,
+    foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "venda_compra_loja_virt_fk"))
+    private VendaCompraLojaVirtual vendaCompraLojaVirtual;
+
     public Long getId() {
         return id;
     }
@@ -73,6 +78,14 @@ public class NotaFiscalVenda implements Serializable {
 
     public void setPdf(String pdf) {
         this.pdf = pdf;
+    }
+
+    public VendaCompraLojaVirtual getVendaCompraLojaVirtual() {
+        return vendaCompraLojaVirtual;
+    }
+
+    public void setVendaCompraLojaVirtual(VendaCompraLojaVirtual vendaCompraLojaVirtual) {
+        this.vendaCompraLojaVirtual = vendaCompraLojaVirtual;
     }
 
     @Override
