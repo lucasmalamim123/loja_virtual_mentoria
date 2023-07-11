@@ -26,6 +26,9 @@ public class ContaPagar implements Serializable {
     private BigDecimal valorTotal;
 
     @Column(nullable = false)
+    private BigDecimal valorDesconto;
+
+    @Column(nullable = false)
     @Temporal(TemporalType.DATE)
     private Date dtVencimento;
 
@@ -68,6 +71,14 @@ public class ContaPagar implements Serializable {
 
     public void setValorTotal(BigDecimal valorTotal) {
         this.valorTotal = valorTotal;
+    }
+
+    public BigDecimal getValorDesconto() {
+        return valorDesconto;
+    }
+
+    public void setValorDesconto(BigDecimal valorDesconto) {
+        this.valorDesconto = valorDesconto;
     }
 
     public Date getDtVencimento() {
