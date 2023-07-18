@@ -7,10 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RestController
@@ -34,5 +33,27 @@ public class AcessoController {
     public ResponseEntity<?> deleteAcesso(@RequestBody Acesso acesso){ /* recebe o JSON e converte para objeto */
         acessoRepository.deleteById(acesso.getId());
         return new ResponseEntity<>("ACESSO REMOVIDO COM SUCESSO", HttpStatus.OK);
+    }
+
+    /* deletando por id */
+    @ResponseBody /* retorno da api */
+    @DeleteMapping(value = "**/deleteAcessoPorId/{id}") /* mapenado url para receber um JSON */
+    public ResponseEntity<?> deleteAcessoPorId(@PathVariable("id") Long id){ /* recebe o JSON e converte para objeto */
+        acessoRepository.deleteById(id);
+        return new ResponseEntity<>("ACESSO REMOVIDO PELO ID COM SUCESSO", HttpStatus.OK);
+    }
+
+    @ResponseBody /* retorno da api */
+    @GetMapping(value = "**/obterAcesso/{id}") /* mapenado url para receber um JSON */
+    public ResponseEntity<Acesso> obterAcesso(@PathVariable("id") Long id){ /* recebe o JSON e converte para objeto */
+        Acesso acesso = acessoRepository.findById(id).get();
+        return new ResponseEntity<Acesso>(acesso, HttpStatus.OK);
+    }
+
+    @ResponseBody /* retorno da api */
+    @GetMapping(value = "**/buscarPorDesc/{desc}") /* mapenado url para receber um JSON */
+    public ResponseEntity<List<Acesso>> buscarPorDesc(@PathVariable("desc") String desc){ /* recebe o JSON e converte para objeto */
+        List<Acesso> acesso = acessoRepository.buscarAcessoDescricao(desc);
+        return new ResponseEntity<List<Acesso>>(acesso, HttpStatus.OK);
     }
 }
