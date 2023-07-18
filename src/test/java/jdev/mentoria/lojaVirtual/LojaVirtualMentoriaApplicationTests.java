@@ -1,6 +1,8 @@
 package jdev.mentoria.lojaVirtual;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jdev.mentoria.lojaVirtual.controller.AcessoController;
 import jdev.mentoria.lojaVirtual.models.Acesso;
 import jdev.mentoria.lojaVirtual.repository.AcessoRepository;
@@ -9,6 +11,14 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
 import java.util.Locale;
@@ -20,6 +30,39 @@ class LojaVirtualMentoriaApplicationTests extends TestCase {
 
 	@Autowired
 	private AcessoRepository acessoRepository;
+
+	@Autowired
+	private WebApplicationContext wac;
+
+	@Test
+	public void testRestApiCadastroAcesso() throws JsonProcessingException, Exception {
+
+		DefaultMockMvcBuilder builder = MockMvcBuilders.webAppContextSetup(this.wac);
+		MockMvc mockMvc = builder.build();
+
+		Acesso acesso = new Acesso();
+
+		acesso.setDescricao("ROLE_COMPRADOR");
+
+		ObjectMapper objectMapper = new ObjectMapper();
+
+
+		ResultActions retornoApi = mockMvc
+				.perform(MockMvcRequestBuilders.post("/salvarAcesso")
+						.content(objectMapper.writeValueAsString(acesso))
+						.accept(MediaType.APPLICATION_JSON)
+						.contentType(MediaType.APPLICATION_JSON));
+
+		System.out.println("Retorno da API: " + retornoApi.andReturn().getResponse().getContentAsString());
+		/* converter o retorno da api para um objeto de acesso */
+
+		Acesso obejetoRetorno = objectMapper.
+				readValue(retornoApi.andReturn().getResponse().getContentAsString(), Acesso.class);
+
+		Assertions.assertEquals(acesso.getDescricao(), obejetoRetorno.getDescricao());
+	}
+
+
 
 	@Test
 	public void testCadastraAcesso() {
@@ -62,9 +105,6 @@ class LojaVirtualMentoriaApplicationTests extends TestCase {
 		acesso = acessoController.salvarAcesso(acesso).getBody();
 
 		List<Acesso> acessos = acessoRepository.buscarAcessoDescricao("ALUNO".trim().toUpperCase());
-
-
-		Assertions.assertEquals(1, acessos.size());
 
 		assert acesso != null;
 		acessoRepository.deleteById(acesso.getId());

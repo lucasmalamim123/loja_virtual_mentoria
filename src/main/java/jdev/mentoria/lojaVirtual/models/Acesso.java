@@ -1,5 +1,6 @@
 package jdev.mentoria.lojaVirtual.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
@@ -18,6 +19,8 @@ public class Acesso implements GrantedAuthority {
 
     @Column(nullable = false)
     private String descricao; /*acesso ex: ROLE_ADMIN ou ROLE_SECRETARIO*/
+
+    @JsonIgnore
     @Override
     public String getAuthority() {
         return this.descricao;
